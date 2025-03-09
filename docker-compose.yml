@@ -12,7 +12,7 @@ services:
     volumes:
       - dolibarr_db:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dolibarr"]
+      test: ["CMD-SHELL", "pg_isready -U JordanWorkDone"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -30,15 +30,15 @@ services:
       DOLI_DB_TYPE: pgsql
       DOLI_DB_HOST: postgres
       DOLI_DB_PORT: 5432
-      DOLI_DB_USER: dolibarr
-      DOLI_DB_PASSWORD: dolibarr
+      DOLI_DB_USER: JordanWorkDone               # corrected
+      DOLI_DB_PASSWORD: Ilovelamp112!            # corrected
       DOLI_DB_NAME: dolibarr
       DOLI_URL_ROOT: "http://localhost:8027"
-      DOLI_ADMIN_LOGIN: "JordanWorkDone"           # Updated with your username
-      DOLI_ADMIN_PASSWORD: "Ilovelamp112!"         # Updated with your password
+      DOLI_ADMIN_LOGIN: "JordanWorkDone"
+      DOLI_ADMIN_PASSWORD: "Ilovelamp112!"
       DOLI_MODULES: "modSociete,modExpedition,modFournisseur,modProduct,modService,modFacture"
-      DOLI_PROD: "0"  # Debug mode
-      DOLI_FORCE_SETUP_SQL_PARAMETERS: "1"  # Force SQL parameters
+      DOLI_PROD: "0"
+      DOLI_FORCE_SETUP_SQL_PARAMETERS: "1"
       DOLI_PDF_FORMAT: "A4"
       PHP_INI_DATE_TIMEZONE: "UTC"
     volumes:
