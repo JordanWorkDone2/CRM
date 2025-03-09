@@ -2,48 +2,61 @@ name: jordan_tremayne
 services:
   dolibarr:
     container_name: dolibarr-app
+    image: tuxgasy/dolibarr:latest
+    restart: always
+    ports:
+      - "8027:80"
     depends_on:
       postgres:
         condition: service_healthy
-        required: true
     environment:
-      DOLI_ADMIN_LOGIN: JordanWorkDone
-      DOLI_ADMIN_PASSWORD: Ilovelamp112!
       DOLI_DB_TYPE: pgsql
       DOLI_DB_HOST: postgres
-      DOLI_DB_PORT: 5432
-      DOLI_DB_USER: JordanWorkDone            # fixed
-      DOLI_DB_PASSWORD: Ilovelamp112!         # fixed
+      DOLI_DB_PORT: "5432"
       DOLI_DB_NAME: dolibarr
+      DOLI_DB_USER: JordanWorkDone             # FIXED: matches postgres user
+      DOLI_DB_PASSWORD: Ilovelamp112!          # fixed password
+      DOLI_ADMIN_LOGIN: JordanWorkDone
+      DOLI_ADMIN_PASSWORD: Ilovelamp112!
+      DOLI_URL_ROOT: "http://localhost:8027"
+      DOLI_PROD: "0"
       DOLI_FORCE_SETUP_SQL_PARAMETERS: "1"
       DOLI_MODULES: modSociete,modExpedition,modFournisseur,modProduct,modService,modFacture
       DOLI_PDF_FORMAT: A4
-      DOLI_ADMIN_LOGIN: JordanWorkDone
-      DOLI_ADMIN_PASSWORD: Ilovelamp112!
       PHP_INI_DATE_TIMEZONE: UTC
-    container_name: dolibarr-app
-    depends_on:
-      postgres:
-        condition: service_healthy
-    ports:
-      - "8027:80"
+      PHP_INI_MEMORY_LIMIT: 256M
     restart: always
     volumes:
       - dolibarr_docs:/var/www/documents
-      - /var/www/html/custom
-      - ./custom:/var/www/html/custom
-      - ./custom:/var/www/html/custom
-      - ./custom:/var/www/html/custom
-      - ./custom:/var/www/html/custom
-      - ./custom:/var/www/html/custom
-      - ./custom:/var/www/html/custom
-      - ./custom:/var/www/html/custom
-      - ./custom:/var/www/html/custom
-      - ./custom:/var/www/html/custom
-      - ./custom:/var/www/html/custom
-      - ./custom:/var/www/html/custom
-      - ./custom:/var/www/html/custom
-      - ./custom:/var/www/html/custom
-      - ./custom:/var/www/html/custom
-      - ./custom:/var/www/html/custom
-      -
+      - type: bind
+        source: /Users/jordan_tremayne/custom
+        target: /var/www/html/custom
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /Users/jordan_tremayne/conf
+        target: /var/www/html/conf
+        bind:
+          create_host_path: true
+
+  postgres:
+    container_name: dolibarr-postgres
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: dolibarr
+      POSTGRES_PASSWORD: Ilovelamp112!
+      POSTGRES_USER: JordanWorkDone
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U JordanWorkDone"]  # fixed here
+      timeout: 5s
+      interval: 10s
+      retries: 5
+    volumes:
+      - dolibarr_db:/var/lib/postgresql/data
+
+volumes:
+  dolibarr_db:
+    name: jordan_tremayne_dolibarr_db
+  dolibarr_docs:
+    name: jordan_tremayne_dolibarr_docs
