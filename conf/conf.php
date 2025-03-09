@@ -1,0 +1,12 @@
+<?php
+$dolibarr_main_url_root="http://crm.local:8027";
+$dolibarr_main_document_root="/var/www/html";
+$dolibarr_main_data_root="/var/www/documents";
+$dolibarr_main_db_host="postgres";
+$dolibarr_main_db_port="5432";
+$dolibarr_main_db_name="dolibarr";
+$dolibarr_main_db_user="dolibarr";
+$dolibarr_main_db_pass="dolibarr";
+$dolibarr_main_db_type="pgsql";
+$dolibarr_main_authentication="dolibarr";
+?>
