@@ -1,10 +1,7 @@
-version: "3.8"
-
 services:
   postgres:
     container_name: dolibarr-postgres
-    image: postgres:14
-    restart: always
+    image: postgres:latest
     environment:
       POSTGRES_USER: JordanWorkDone
       POSTGRES_PASSWORD: Ilovelamp112!
@@ -20,23 +17,21 @@ services:
   dolibarr:
     container_name: dolibarr-app
     image: tuxgasy/dolibarr:latest
-    restart: always
+    ports:
+      - "8027:80"
     depends_on:
       postgres:
         condition: service_healthy
-    ports:
-      - "8027:80"
     environment:
       DOLI_DB_TYPE: pgsql
       DOLI_DB_HOST: postgres
       DOLI_DB_PORT: 5432
-      DOLI_DB_USER: JordanWorkDone               # corrected
-      DOLI_DB_PASSWORD: Ilovelamp112!            # corrected
+      DOLI_DB_USER: JordanWorkDone
+      DOLI_DB_PASSWORD: Ilovelamp112!
       DOLI_DB_NAME: dolibarr
       DOLI_URL_ROOT: "http://localhost:8027"
       DOLI_ADMIN_LOGIN: "JordanWorkDone"
       DOLI_ADMIN_PASSWORD: "Ilovelamp112!"
-      DOLI_MODULES: "modSociete,modExpedition,modFournisseur,modProduct,modService,modFacture"
       DOLI_PROD: "0"
       DOLI_FORCE_SETUP_SQL_PARAMETERS: "1"
       DOLI_PDF_FORMAT: "A4"
