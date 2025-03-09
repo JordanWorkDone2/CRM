@@ -1,0 +1,44 @@
+echo 'version: "3.8"
+
+services:
+  postgres:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: JordanWorkDone
+      POSTGRES_PASSWORD: Ilovelamp112!
+      POSTGRES_DB: dolibarr
+    volumes:
+      - dolibarr_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dolibarr"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  dolibarr:
+    image: tuxgasy/dolibarr:latest
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment:
+      DOLI_DB_TYPE: pgsql
+      DOLI_DB_HOST: postgres
+      DOLI_DB_PORT: 5432
+      DOLI_DB_USER: dolibarr
+      DOLI_DB_PASSWORD: dolibarr
+      DOLI_DB_NAME: dolibarr
+      DOLI_URL_ROOT: "http://localhost:8080"
+      DOLI_ADMIN_LOGIN: admin
+      DOLI_ADMIN_PASSWORD: admin
+      DOLI_MODULES: "modSociete,modExpedition,modFournisseur,modProduct,modService,modFacture"
+    volumes:
+      - dolibarr_docs:/var/www/documents
+      - ./custom:/var/www/html/custom
+
+volumes:
+  dolibarr_db:
+  dolibarr_docs:' > docker-compose.yml
