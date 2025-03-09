@@ -1,0 +1,44 @@
+version: "3.8"
+services:
+  postgres:
+    container_name: dolibarr-postgres
+    image: postgres:14
+    environment:
+      POSTGRES_USER: dolibarr
+      POSTGRES_PASSWORD: dolibarr
+      POSTGRES_DB: dolibarr
+    volumes:
+      - crm_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dolibarr"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  dolibarr:
+    container_name: dolibarr-app
+    image: tuxgasy/dolibarr:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8027:80"
+    environment:
+      DOLI_DB_TYPE: pgsql
+      DOLI_DB_HOST: postgres
+      DOLI_DB_PORT: 5432
+      DOLI_DB_USER: dolibarr
+      DOLI_DB_PASSWORD: dolibarr
+      DOLI_DB_NAME: dolibarr
+      DOLI_URL_ROOT: "http://crm.local:8027"
+      DOLI_ADMIN_LOGIN: "JordanWorkDone"
+      DOLI_ADMIN_PASSWORD: "Ilovelamp112!"
+      DOLI_FORCE_SETUP_SQL_PARAMETERS: "1"
+    volumes:
+      - crm_docs:/var/www/documents
+      - ./custom:/var/www/html/custom
+      - ./conf:/var/www/html/conf
+
+volumes:
+  crm_db:
+  crm_docs:
