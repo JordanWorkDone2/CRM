@@ -1,44 +1,49 @@
+name: jordan_tremayne
 services:
-  postgres:
-    container_name: dolibarr-postgres
-    image: postgres:14
-    environment:
-      POSTGRES_USER: JordanWorkDone
-      POSTGRES_PASSWORD: Ilovelamp112!
-      POSTGRES_DB: dolibarr
-    volumes:
-      - dolibarr_db:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U JordanWorkDone"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   dolibarr:
     container_name: dolibarr-app
-    image: tuxgasy/dolibarr:latest
-    ports:
-      - "8027:80"
     depends_on:
       postgres:
         condition: service_healthy
+        required: true
     environment:
+      DOLI_ADMIN_LOGIN: JordanWorkDone
+      DOLI_ADMIN_PASSWORD: Ilovelamp112!
       DOLI_DB_TYPE: pgsql
       DOLI_DB_HOST: postgres
       DOLI_DB_PORT: 5432
-      DOLI_DB_USER: JordanWorkDone
-      DOLI_DB_PASSWORD: Ilovelamp112!
+      DOLI_DB_USER: JordanWorkDone            # fixed
+      DOLI_DB_PASSWORD: Ilovelamp112!         # fixed
       DOLI_DB_NAME: dolibarr
-      DOLI_URL_ROOT: "http://localhost:8027"
-      DOLI_ADMIN_LOGIN: "JordanWorkDone"
-      DOLI_ADMIN_PASSWORD: "Ilovelamp112!"
-      DOLI_PROD: "0"
       DOLI_FORCE_SETUP_SQL_PARAMETERS: "1"
-      PHP_INI_DATE_TIMEZONE: "UTC"
+      DOLI_MODULES: modSociete,modExpedition,modFournisseur,modProduct,modService,modFacture
+      DOLI_PDF_FORMAT: A4
+      DOLI_ADMIN_LOGIN: JordanWorkDone
+      DOLI_ADMIN_PASSWORD: Ilovelamp112!
+      PHP_INI_DATE_TIMEZONE: UTC
+    container_name: dolibarr-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8027:80"
+    restart: always
     volumes:
       - dolibarr_docs:/var/www/documents
+      - /var/www/html/custom
       - ./custom:/var/www/html/custom
-
-volumes:
-  dolibarr_db:
-  dolibarr_docs:
+      - ./custom:/var/www/html/custom
+      - ./custom:/var/www/html/custom
+      - ./custom:/var/www/html/custom
+      - ./custom:/var/www/html/custom
+      - ./custom:/var/www/html/custom
+      - ./custom:/var/www/html/custom
+      - ./custom:/var/www/html/custom
+      - ./custom:/var/www/html/custom
+      - ./custom:/var/www/html/custom
+      - ./custom:/var/www/html/custom
+      - ./custom:/var/www/html/custom
+      - ./custom:/var/www/html/custom
+      - ./custom:/var/www/html/custom
+      - ./custom:/var/www/html/custom
+      -
