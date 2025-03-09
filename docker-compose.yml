@@ -1,40 +1,36 @@
-echo 'version: "3.8"
+version: "3.8"
 
 services:
   postgres:
+    container_name: crm-postgres
     image: postgres:14
-    restart: always
     environment:
-      POSTGRES_USER: JordanWorkDone
-      POSTGRES_PASSWORD: Ilovelamp112!
-      POSTGRES_DB: dolibarr
+      POSTGRES_USER: crm
+      POSTGRES_PASSWORD: crm
+      POSTGRES_DB: crm
     volumes:
-      - dolibarr_db:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dolibarr"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - crm_db:/var/lib/postgresql/data
 
   dolibarr:
+    container_name: crm-app
     image: tuxgasy/dolibarr:latest
-    restart: always
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     ports:
-      - "8080:80"
+      - "8027:80"
     environment:
       DOLI_DB_TYPE: pgsql
       DOLI_DB_HOST: postgres
-      DOLI_DB_PORT: 5432
-      DOLI_DB_USER: dolibarr
-      DOLI_DB_PASSWORD: dolibarr
-      DOLI_DB_NAME: dolibarr
-      DOLI_URL_ROOT: "http://localhost:8080"
-      DOLI_ADMIN_LOGIN: admin
-      DOLI_ADMIN_PASSWORD: admin
-      DOLI_MODULES: "modSociete,modExpedition,modFournisseur,modProduct,modService,modFacture"
+      DOLI_DB_USER: crm
+      DOLI_DB_PASSWORD: crm
+      DOLI_DB_NAME: crm
+      DOLI_URL_ROOT: "http://crm.local:8027"
+      DOLI_ADMIN_LOGIN: "JordanWorkDone"
+      DOLI_ADMIN_PASSWORD: "Ilovelamp112!"
     volumes:
-      - dolibarr_docs:/var/www/documents
+      - crm_docs:/var/www/documents
       - ./custom:/var/www/html/custom
+
+volumes:
+  crm_db:
+  crm_docs:
