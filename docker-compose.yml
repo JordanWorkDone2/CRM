@@ -1,5 +1,4 @@
 version: "3.8"
-
 services:
   postgres:
     container_name: crm-postgres
@@ -10,25 +9,35 @@ services:
       POSTGRES_DB: crm
     volumes:
       - crm_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crm"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   dolibarr:
     container_name: crm-app
     image: tuxgasy/dolibarr:latest
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - "8027:80"
     environment:
       DOLI_DB_TYPE: pgsql
       DOLI_DB_HOST: postgres
-      DOLI_DB_PORT: 5432  # Make sure this is set to 5432 for PostgreSQL
+      DOLI_DB_PORT: 5432
       DOLI_DB_USER: crm
       DOLI_DB_PASSWORD: crm
       DOLI_DB_NAME: crm
       DOLI_URL_ROOT: "http://crm.local:8027"
       DOLI_ADMIN_LOGIN: "JordanWorkDone"
       DOLI_ADMIN_PASSWORD: "Ilovelamp112!"
-      DOLI_FORCE_SETUP_SQL_PARAMETERS: "1"  # Force SQL parameters
+      DOLI_FORCE_SETUP_SQL_PARAMETERS: "1"
+      DOLI_CONFIG_MAILING_TITLE_SUPPORT: "CRM Support"
+      PHP_INI_DATE_TIMEZONE: "UTC"
+      DOLI_AUTH: dolibarr
+      DOLI_PROD: "0"
     volumes:
       - crm_docs:/var/www/documents
       - ./custom:/var/www/html/custom
