@@ -1,14 +1,16 @@
 version: "3.8"
+
 services:
   postgres:
     container_name: dolibarr-postgres
     image: postgres:14
+    restart: always
     environment:
-      POSTGRES_USER: dolibarr
-      POSTGRES_PASSWORD: dolibarr
+      POSTGRES_USER: JordanWorkDone
+      POSTGRES_PASSWORD: Ilovelamp112!
       POSTGRES_DB: dolibarr
     volumes:
-      - crm_db:/var/lib/postgresql/data
+      - dolibarr_db:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U dolibarr"]
       interval: 10s
@@ -18,6 +20,7 @@ services:
   dolibarr:
     container_name: dolibarr-app
     image: tuxgasy/dolibarr:latest
+    restart: always
     depends_on:
       postgres:
         condition: service_healthy
@@ -30,15 +33,18 @@ services:
       DOLI_DB_USER: dolibarr
       DOLI_DB_PASSWORD: dolibarr
       DOLI_DB_NAME: dolibarr
-      DOLI_URL_ROOT: "http://crm.local:8027"
-      DOLI_ADMIN_LOGIN: "JordanWorkDone"
-      DOLI_ADMIN_PASSWORD: "Ilovelamp112!"
-      DOLI_FORCE_SETUP_SQL_PARAMETERS: "1"
+      DOLI_URL_ROOT: "http://localhost:8027"
+      DOLI_ADMIN_LOGIN: "JordanWorkDone"           # Updated with your username
+      DOLI_ADMIN_PASSWORD: "Ilovelamp112!"         # Updated with your password
+      DOLI_MODULES: "modSociete,modExpedition,modFournisseur,modProduct,modService,modFacture"
+      DOLI_PROD: "0"  # Debug mode
+      DOLI_FORCE_SETUP_SQL_PARAMETERS: "1"  # Force SQL parameters
+      DOLI_PDF_FORMAT: "A4"
+      PHP_INI_DATE_TIMEZONE: "UTC"
     volumes:
-      - crm_docs:/var/www/documents
+      - dolibarr_docs:/var/www/documents
       - ./custom:/var/www/html/custom
-      - ./conf:/var/www/html/conf
 
 volumes:
-  crm_db:
-  crm_docs:
+  dolibarr_db:
+  dolibarr_docs:
