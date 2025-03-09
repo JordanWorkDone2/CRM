@@ -1,7 +1,7 @@
 services:
   postgres:
     container_name: dolibarr-postgres
-    image: postgres:latest
+    image: postgres:14
     environment:
       POSTGRES_USER: JordanWorkDone
       POSTGRES_PASSWORD: Ilovelamp112!
@@ -34,7 +34,6 @@ services:
       DOLI_ADMIN_PASSWORD: "Ilovelamp112!"
       DOLI_PROD: "0"
       DOLI_FORCE_SETUP_SQL_PARAMETERS: "1"
-      DOLI_PDF_FORMAT: "A4"
       PHP_INI_DATE_TIMEZONE: "UTC"
     volumes:
       - dolibarr_docs:/var/www/documents
