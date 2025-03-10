@@ -1,5 +1,26 @@
+<<<<<<< HEAD
 name: jordan_tremayne
 services:
+=======
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: JordanWorkDone
+      POSTGRES_PASSWORD: Ilovelamp112!
+      POSTGRES_DB: dolibarr
+    volumes:
+      - dolibarr_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dolibarr"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+>>>>>>> a3b88e3 (Updated docker-compose.yml with latest correct credentials)
   dolibarr:
     container_name: dolibarr-app
     image: tuxgasy/dolibarr:latest
@@ -28,6 +49,7 @@ services:
     restart: always
     volumes:
       - dolibarr_docs:/var/www/documents
+<<<<<<< HEAD
       - type: bind
         source: /Users/jordan_tremayne/custom
         target: /var/www/html/custom
@@ -60,3 +82,10 @@ volumes:
     name: jordan_tremayne_dolibarr_db
   dolibarr_docs:
     name: jordan_tremayne_dolibarr_docs
+=======
+      - ./custom:/var/www/html/custom
+
+volumes:
+  dolibarr_db:
+  dolibarr_docs:
+>>>>>>> a3b88e3 (Updated docker-compose.yml with latest correct credentials)
