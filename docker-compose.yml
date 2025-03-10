@@ -1,42 +1,37 @@
-<<<<<<< HEAD
 name: jordan_tremayne
-services:
-=======
-version: "3.8"
-
 services:
   postgres:
     image: postgres:14
+    container_name: dolibarr-postgres
     restart: always
     environment:
       POSTGRES_USER: JordanWorkDone
       POSTGRES_PASSWORD: Ilovelamp112!
       POSTGRES_DB: dolibarr
-    volumes:
-      - dolibarr_db:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dolibarr"]
+      test: ["CMD-SHELL", "pg_isready -U JordanWorkDone"]
       interval: 10s
       timeout: 5s
       retries: 5
+    volumes:
+      - dolibarr_db:/var/lib/postgresql/data
 
->>>>>>> a3b88e3 (Updated docker-compose.yml with latest correct credentials)
   dolibarr:
-    container_name: dolibarr-app
     image: tuxgasy/dolibarr:latest
+    container_name: dolibarr-app
     restart: always
-    ports:
-      - "8027:80"
     depends_on:
       postgres:
         condition: service_healthy
+    ports:
+      - "8027:80"
     environment:
       DOLI_DB_TYPE: pgsql
       DOLI_DB_HOST: postgres
       DOLI_DB_PORT: "5432"
       DOLI_DB_NAME: dolibarr
-      DOLI_DB_USER: JordanWorkDone             # FIXED: matches postgres user
-      DOLI_DB_PASSWORD: Ilovelamp112!          # fixed password
+      DOLI_DB_USER: JordanWorkDone
+      DOLI_DB_PASSWORD: Ilovelamp112!
       DOLI_ADMIN_LOGIN: JordanWorkDone
       DOLI_ADMIN_PASSWORD: Ilovelamp112!
       DOLI_URL_ROOT: "http://localhost:8027"
@@ -46,10 +41,13 @@ services:
       DOLI_PDF_FORMAT: A4
       PHP_INI_DATE_TIMEZONE: UTC
       PHP_INI_MEMORY_LIMIT: 256M
-    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8027:80"
     volumes:
       - dolibarr_docs:/var/www/documents
-<<<<<<< HEAD
       - type: bind
         source: /Users/jordan_tremayne/custom
         target: /var/www/html/custom
@@ -61,31 +59,8 @@ services:
         bind:
           create_host_path: true
 
-  postgres:
-    container_name: dolibarr-postgres
-    image: postgres:14
-    restart: always
-    environment:
-      POSTGRES_DB: dolibarr
-      POSTGRES_PASSWORD: Ilovelamp112!
-      POSTGRES_USER: JordanWorkDone
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U JordanWorkDone"]  # fixed here
-      timeout: 5s
-      interval: 10s
-      retries: 5
-    volumes:
-      - dolibarr_db:/var/lib/postgresql/data
-
 volumes:
   dolibarr_db:
     name: jordan_tremayne_dolibarr_db
   dolibarr_docs:
     name: jordan_tremayne_dolibarr_docs
-=======
-      - ./custom:/var/www/html/custom
-
-volumes:
-  dolibarr_db:
-  dolibarr_docs:
->>>>>>> a3b88e3 (Updated docker-compose.yml with latest correct credentials)
